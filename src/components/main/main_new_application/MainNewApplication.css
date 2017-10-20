@@ -1,0 +1,11 @@
+.custom-textarea {
+    resize: vertical;
+    font-weight: 300;
+    min-height: 200px;
+}
+
+.custom-calendar {
+    box-sizing: border-box;
+    width: 20%;
+    margin-bottom: 20px;
+}
