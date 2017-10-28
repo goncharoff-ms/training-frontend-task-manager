@@ -6,7 +6,6 @@ import {Grid} from "react-bootstrap";
 import {Row} from "react-bootstrap";
 import {PageHeader} from "react-bootstrap";
 import {Col} from "react-bootstrap";
-import {Jumbotron} from "react-bootstrap";
 import {Button} from "react-bootstrap";
 import ActiveWindow from "./../active_window/ActiveWindow";
 
@@ -51,28 +50,20 @@ class MainListApplication extends Component {
                 console.log(res);
                 this.setState({ posts : res.data });
             });
-
     }
 
     clickActiveWindow = (prop) => {
-        document.getElementById('bodyApp').classList.add('activeWindowFix');
         this.setState(prevState => ({
             isActiveWindow: !prevState.isActiveWindow
         }));
     };
 
-    clickCallBackActive = (prop) => {
-        document.getElementById('bodyApp').classList.remove('activeWindowFix');
-        this.setState(prevState => ({
-            isActiveWindow: !prevState.isActiveWindow
-        }));
-    };
 
 
     render() {
         return (
             <Grid>
-                <ActiveWindow activeFunc={this.clickCallBackActive.bind(this)}
+                <ActiveWindow activeFunc={this.clickActiveWindow.bind(this)}
                               active={this.state.isActiveWindow}/>
                 <Row>
                     <Col xsOffset={1} xs={10}>
@@ -86,9 +77,5 @@ class MainListApplication extends Component {
     }
 }
 
-/*
-
-
- */
 
 export default MainListApplication;
