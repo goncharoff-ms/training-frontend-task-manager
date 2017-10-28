@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import {Button, Col, Jumbotron, Row} from "react-bootstrap";
-import './Application.css'
 
 
 

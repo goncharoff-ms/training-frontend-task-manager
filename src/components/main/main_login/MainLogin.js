@@ -1,21 +1,29 @@
 import React, { Component } from 'react';
+import axios from 'axios'
 import {PageHeader, Grid, Row, Col, FormGroup, FormControl, Button} from 'react-bootstrap'
+import Store from './../../../Store'
 
 class MainLogin extends Component {
 
     constructor(props) {
         super(props);
-
-
         this.state = {
-            login : '',
-            password : ''
+            login : 'max1Gonch',
+            password : '123123'
         };
     }
 
-    handleChange = (e) => {
-        this.setState({ value: e.target.value });
-    };
+    auth = () => {
+        axios.post('http://localhost:8080/sign-in',  {
+                login : 'max1Gonch',
+                password : '123123'
+        }).then(function (resp) {
+            console.log(resp);
+        }).catch(function (e) {
+            console.log(e);
+        })
+    }
+
 
     render() {
         return(
@@ -28,7 +36,7 @@ class MainLogin extends Component {
                         <FormGroup>
                             <FormControl type="text" placeholder="Login"/>
                             <FormControl type="password" placeholder="Password"/>
-                            <Button bsStyle="primary" bsSize="large" block>Войти</Button>
+                            <Button onClick={this.auth} bsStyle="primary" bsSize="large" block>Войти</Button>
                         </FormGroup>
                     </Col>
                 </Row>
