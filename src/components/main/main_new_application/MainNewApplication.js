@@ -51,18 +51,32 @@ class MainNewApplication extends Component {
             info : this.state.info,
             date : this.state.date
         };
-        console.log(data);
+        let params = new URLSearchParams();
+        let login = document.getElementById("login_id").value;
+        let password = document.getElementById("password_id").value;
+        let name = document.getElementById("name_id").value;
+        let surname = document.getElementById("surname_id").value;
+        let passwordRepeat = document.getElementById("password_repeat_id").value;
+        let email = document.getElementById("email_id").value;
+        let about = document.getElementById("about_id").value;
+        let inviteToken = document.getElementById("invite_token_id").value;
 
-        axios.post('http://localhost:8080/new/application', {
-            name: data.name,
-            order: data.order,
-            info: data.info,
-            date: data.date
-        }).then(function (response) {
-            console.log(response);
-        }).catch(function (response) {
-            console.log(response);
-        });
+        params.append('login', login);
+        params.append('password', password);
+        params.append('name', name);
+        params.append('surname', surname);
+        params.append('email', email);
+        params.append('about', about);
+        params.append('token_invite', inviteToken);
+
+        axios.post('http://localhost:8080/sign-up', params)
+            .then((response) => {
+                console.log(response);
+                this.props.funcUser(response.data.userLogin, response.data.token);
+            })
+            .catch( (error) => {
+                console.log(error);
+            });
 
         event.preventDefault();
     }
@@ -70,33 +84,22 @@ class MainNewApplication extends Component {
 
     render() {
         return(
-            <div className="wrap">
-                <main rel="main" className="content">
-                    <header className="content__header">
-                        <h2>
-                            Создание новой заявки
-                        </h2>
-                    </header>
-                    <div className="content__applications">
-                        <form onSubmit={this.handleSubmit}>
-                        <input onChange={this.handleChangeName} value={this.state.name} className="main-login__input" name="name" type="text" placeholder="Имя заявки"/>
-                        <br/>
-                        <select onChange={this.handleChangeOrder} value={this.state.order} className="main-login__input">
-                            <option>НИЗКИЙ</option>
-                            <option>СРЕДНИЙ</option>
-                            <option>ВЫСОКИЙ</option>
-                        </select>
-                        <br/>
-                        <textarea onChange={this.handleChangeInfo} value={this.state.info} placeholder="Описание заявки" className="main-login__input custom-textarea">
+            <form onSubmit={this.handleSubmit}>
+                <input onChange={this.handleChangeName} value={this.state.name} className="main-login__input" name="name" type="text" placeholder="Имя заявки"/>
+                <br/>
+                <select onChange={this.handleChangeOrder} value={this.state.order} className="main-login__input">
+                    <option>НИЗКИЙ</option>
+                    <option>СРЕДНИЙ</option>
+                    <option>ВЫСОКИЙ</option>
+                </select>
+                <br/>
+                <textarea onChange={this.handleChangeInfo} value={this.state.info} placeholder="Описание заявки" className="main-login__input custom-textarea">
                         </textarea>
-                        <br/>
-                        <input onChange={this.handleChangeDate} value={this.state.date} type="datetime-local" className="custom-calendar"/>
-                        <br/>
-                        <button type="submit" className="custom-btn">создать заявку</button>
-                        </form>
-                    </div>
-                </main>
-            </div>
+                <br/>
+                <input onChange={this.handleChangeDate} value={this.state.date} type="datetime-local" className="custom-calendar"/>
+                <br/>
+                <button type="submit" className="custom-btn">создать заявку</button>
+            </form>
         );
     }
 }

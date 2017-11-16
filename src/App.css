@@ -1,3 +1,9 @@
-.min-height-fix {
-    min-height: 100%;
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    list-style: none;
+    text-decoration: none;
 }
