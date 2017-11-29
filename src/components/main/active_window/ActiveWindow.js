@@ -1,24 +1,30 @@
 import React from 'react';
-import {Modal, Button} from "react-bootstrap";
-
-import './ActiveWindow.css';
+import {Modal, Button, Jumbotron} from "react-bootstrap";
 
 
 export default (props) => {
+
     if (props.active) {
+        console.log(props.owner.id);
         return(
              <Modal.Dialog>
                  <Modal.Header>
-                      <Modal.Title>Modal title</Modal.Title>
+                      <Modal.Title>Подтверждение подписи</Modal.Title>
                  </Modal.Header>
 
                 <Modal.Body>
-                     One fine body...
+                     Вы уверенны что хотите подписать данную заявку?
+                    <br/>
+                    <h2>{props.owner.post.name}</h2>
+                    <p>{props.owner.post.info}</p>
+                    <p>Приоритет: {props.owner.post.order}</p>
+                    <p>Срок рассмотрения: { new Date(props.owner.post.dateReview).toUTCString() }</p>
+
                 </Modal.Body>
 
                  <Modal.Footer>
-                     <Button>Close</Button>
-                     <Button bsStyle="primary">Save changes</Button>
+                     <Button onClick={props.activeFunc}>Отменить</Button>
+                     <Button onClick={() => {props.accept(props.owner.id); props.activeFunc()}} bsStyle="primary">Подписать</Button>
                  </Modal.Footer>
 
              </Modal.Dialog>

@@ -1,12 +1,24 @@
 import React from 'react';
+import {LinkContainer} from 'react-router-bootstrap'
 import { Link } from 'react-router-dom'
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap'
+import {deleteCookie} from '../../service/CookieService'
 
 
 class Header extends React.Component {
 
+
+    exitSite = (e) => {
+        console.log('!!!!!!!!!!!!!',this.props);
+        this.props.funcUser('', '');
+        deleteCookie('login');
+        deleteCookie('token');
+        e.preventDefault();
+    };
+
+
     render() {
-        if (this.props.loggin) {
+        if (this.props.login) {
             return(
                 <Navbar inverse collapseOnSelect>
                 <Navbar.Header>
@@ -17,11 +29,18 @@ class Header extends React.Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav pullRight>
-                        <NavItem eventKey={1}><Link to="/applications">Заявки</Link></NavItem>
-                        <NavDropdown eventKey={2} title="Ваш профиль" id="basic-nav-dropdown">
-                            <MenuItem eventKey={2.2}><Link to="/users/im">Ваши данные</Link></MenuItem>
+                        <LinkContainer to="/applications">
+                            <NavItem eventKey={1}>Заявки</NavItem>
+                        </LinkContainer>
+                        <LinkContainer to="/new/application">
+                            <NavItem eventKey={2}>Создать заявку</NavItem>
+                        </LinkContainer>
+                        <NavDropdown eventKey={3} title="Ваш профиль" id="basic-nav-dropdown">
+                            <LinkContainer to="/users/im">
+                                <NavItem eventKey={3.2}>Ваши данные</NavItem>
+                            </LinkContainer>
                             <MenuItem divider />
-                            <MenuItem eventKey={2.3}><Link to="/logout">Выйти</Link></MenuItem>
+                            <NavItem onClick={this.exitSite} eventKey={3.3}>Выйти</NavItem>
                         </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>
@@ -38,8 +57,12 @@ class Header extends React.Component {
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav pullRight>
-                            <NavItem eventKey={1}><Link to="/sign-in">Войти</Link></NavItem>
-                            <NavItem eventKey={2}><Link to="/sign-up">Регистрация</Link></NavItem>
+                            <LinkContainer to="/sign-in">
+                                <NavItem eventKey={1}>Войти</NavItem>
+                            </LinkContainer>
+                            <LinkContainer to="/sign-up">
+                                <NavItem eventKey={2}>Регистрация</NavItem>
+                            </LinkContainer>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>

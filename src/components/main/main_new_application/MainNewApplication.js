@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-//import './MainNewApplication.css'
+import createHistory from 'history/createBrowserHistory'
+import { withRouter } from 'react-router-dom'
+import {PageHeader,
+    Grid, Row, Col, FormGroup, FormControl, Button, ControlLabel, HelpBlock} from 'react-bootstrap'
+
 import axios from 'axios';
 
 class MainNewApplication extends Component {
@@ -8,95 +12,83 @@ class MainNewApplication extends Component {
        super(prop);
 
        this.state = {
-           name : '',
-           order : 'НИЗКИЙ',
-           info : '',
-           date : null
+           user : this.props.user()
        };
-        this.handleChangeName = this.handleChangeName.bind(this);
-        this.handleChangeInfo = this.handleChangeInfo.bind(this);
-        this.handleChangeDate = this.handleChangeDate.bind(this);
-        this.handleChangeOrder = this.handleChangeOrder.bind(this);
+
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeName(event) {
-        this.setState({
-            name : event.target.value
-        });
-    }
 
-    handleChangeOrder(event) {
-        this.setState({
-            order : event.target.value
-        });
-    }
+    handleSubmit = (event) => {
 
-    handleChangeInfo(event) {
-        this.setState({
-            info : event.target.value
-        });
-    }
+        let params = new URLSearchParams();
 
-    handleChangeDate(event) {
-        this.setState({
-            date : event.target.value
-        });
-    }
+        const login = this.state.user.userLogin;
+        const token = this.state.user.tokenString;
 
-    handleSubmit(event) {
-        var data = {
-            name : this.state.name,
-            order : this.state.order,
-            info : this.state.info,
-            date : this.state.date
-        };
-        console.log(data);
+         params.append('userLogin', login);
+         params.append('token', token);
+         params.append('name', this.name.value);
+         params.append('order', this.order.value);
+         params.append('info', this.info.value);
+         params.append('date', this.date.value);
 
-        axios.post('http://localhost:8080/new/application', {
-            name: data.name,
-            order: data.order,
-            info: data.info,
-            date: data.date
-        }).then(function (response) {
-            console.log(response);
-        }).catch(function (response) {
-            console.log(response);
-        });
+
+        axios.post('http://localhost:8080/new/application', params)
+         .then((response) => {
+             const history = createHistory();
+             history.goBack();
+         })
+         .catch( (error) => {
+            console.log(error);
+         });
+
 
         event.preventDefault();
-    }
+    };
 
 
     render() {
         return(
-            <div className="wrap">
-                <main rel="main" className="content">
-                    <header className="content__header">
-                        <h2>
-                            Создание новой заявки
-                        </h2>
-                    </header>
-                    <div className="content__applications">
-                        <form onSubmit={this.handleSubmit}>
-                        <input onChange={this.handleChangeName} value={this.state.name} className="main-login__input" name="name" type="text" placeholder="Имя заявки"/>
-                        <br/>
-                        <select onChange={this.handleChangeOrder} value={this.state.order} className="main-login__input">
-                            <option>НИЗКИЙ</option>
-                            <option>СРЕДНИЙ</option>
-                            <option>ВЫСОКИЙ</option>
-                        </select>
-                        <br/>
-                        <textarea onChange={this.handleChangeInfo} value={this.state.info} placeholder="Описание заявки" className="main-login__input custom-textarea">
-                        </textarea>
-                        <br/>
-                        <input onChange={this.handleChangeDate} value={this.state.date} type="datetime-local" className="custom-calendar"/>
-                        <br/>
-                        <button type="submit" className="custom-btn">создать заявку</button>
-                        </form>
-                    </div>
-                </main>
-            </div>
+        <Grid>
+            <Row>
+                <PageHeader>Создание новой заявки</PageHeader>
+                <Col xsOffset={3} xs={6}>
+                    <form>
+                        <FormGroup>
+                            <ControlLabel>Имя заявки</ControlLabel>
+                            <FormControl inputRef={(input) => { this.name = input; }} type="text" placeholder="..." />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <ControlLabel>Выберите приоритет заявки</ControlLabel>
+                            <FormControl inputRef={(input) => { this.order = input; }} componentClass="select" placeholder="select">
+                                <option>НИЗКИЙ</option>
+                                <option>СРЕДНИЙ</option>
+                                <option>ВЫСОКИЙ</option>
+                            </FormControl>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <ControlLabel>Описание заявки</ControlLabel>
+                            <FormControl inputRef={(input) => { this.info = input; }} id="taskInfo_id" placeholder="..." />
+                        </FormGroup>
+
+
+                        <FormGroup>
+                            <ControlLabel>Дата и время окончания действия заявки:</ControlLabel>
+                            <FormControl inputRef={(input) => { this.date = input; }} type="datetime-local"/>
+                        </FormGroup>
+
+                        <FormGroup>
+                                <Button block onClick={this.handleSubmit}  bsStyle="primary" bsSize="large">
+                                    Создать заявку
+                                </Button>
+                        </FormGroup>
+                    </form>
+                </Col>
+            </Row>
+        </Grid>
         );
     }
 }

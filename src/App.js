@@ -1,13 +1,12 @@
 import React from 'react';
-import axios from 'axios';
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Redirect } from 'react-router'
 import MainListApplication from './components/main/main_list_application/MainListApplication'
 import MainLogin from './components/main/main_login/MainLogin'
 import Header from './components/header/Header'
 import MainNewApplication from './components/main/main_new_application/MainNewApplication'
 import MainRegistration from './components/main/main_registration/MainRegistration'
 import Error404 from './components/main/error404/error404'
-import Store from './Store';
+
 
 import './App.css'
 
@@ -17,32 +16,83 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            store : new Store(),
-            isLogin : false
+            isLogin: false,
+            user : {
+                login : '',
+                tokenString : 0,
+            }
         }
     }
+
+    setUserData = (loginNew, tokenStringNew) => {
+        console.log('[App.js] log and token: ' ,loginNew, tokenStringNew);
+        if (String(loginNew).length > 0 && String(tokenStringNew).length) {
+            this.setState({
+                isLogin: true,
+                user : {
+                    userLogin : loginNew,
+                    tokenString : tokenStringNew
+                }
+            });
+        } else {
+            this.setState({
+                isLogin: false,
+                user : {
+                    userLogin : '',
+                    tokenString: ''
+                }
+            });
+        }
+    };
+
+    getUserData = () => {
+      return this.state.user;
+    };
 
 
     render() {
         if (this.state.isLogin) {
             return (
                 <div>
-                    <Header loggin={this.state.isLogin}/>
+                    <Header funcUser={this.setUserData.bind(this)} login={true}/>
                     <Switch>
-                        <Route exact path='/applications' component={MainListApplication}/>
-                        <Route exact path='/new/applications' component={MainNewApplication} />
-                        <Route path="/**" component={Error404} />
+
+                        <Route exact path='/applications'>
+                            <MainListApplication user={this.getUserData.bind(this)} funcUser={this.setUserData.bind(this)}/>
+                        </Route>
+
+                        <Route exact path='/new/application'>
+                            <MainNewApplication user={this.getUserData.bind(this)} funcUser={this.setUserData.bind(this)}/>
+                        </Route>
+
+                        <Route exact path='/sign-in'>
+                            <Redirect to="/applications"/>
+                        </Route>
+
+                        <Route exact path='/sign-up'>
+                            <Redirect to="/applications"/>
+                        </Route>
+
+                        <Route path="/**" component={Error404}/>
                     </Switch>
                 </div>
             )
         } else {
             return(
                 <div>
-                    <Header loggin={this.state.isLogin}/>
+                    <Header funcUser={this.setUserData.bind(this)} login={false}/>
                     <Switch>
-                        <Route exact path='/sign-in' component={MainLogin}/>
-                        <Route exact path='/sign-up' component={MainRegistration}/>
-                        <Route path="/**" component={Error404} />
+                        <Route exact path='/sign-in'>
+                            <MainLogin funcUser={this.setUserData.bind(this)}/>
+                        </Route>
+
+                        <Route exact path='/sign-up'>
+                            <MainRegistration funcUser={this.setUserData.bind(this)}/>
+                        </Route>
+
+                        <Route path="/**">
+                            <Redirect to="/sign-in"/>
+                        </Route>
                     </Switch>
                 </div>
             )
@@ -50,5 +100,7 @@ class App extends React.Component {
     }
 
 }
+
+
 
 export default App;
