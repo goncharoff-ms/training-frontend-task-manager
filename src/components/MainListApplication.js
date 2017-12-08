@@ -7,8 +7,8 @@ import {Row} from "react-bootstrap";
 import {PageHeader} from "react-bootstrap";
 import {Col} from "react-bootstrap";
 import {Button} from "react-bootstrap";
-import Applications from './../application/Application'
-import ActiveWindow from "./../active_window/ActiveWindow";
+import Applications from './Application'
+import ActiveWindow from "./ActiveWindow";
 
 /*
  [
@@ -47,7 +47,11 @@ class MainListApplication extends Component {
             user : this.props.user(),
             posts :  [],
             isActiveWindow: false,
-            ownerActiveEvent : {}
+            ownerActiveEvent : {},
+            btn : {
+                all : false,
+                history : false
+            }
         }
     }
 
@@ -68,7 +72,13 @@ class MainListApplication extends Component {
             params: params
         }).then((response) => {
             console.log(response);
-            this.setState({ posts : response.data });
+            this.setState({
+                posts : response.data,
+                btn : {
+                    all : true,
+                    history: false
+                }
+            });
         }).catch( (error) => {
             console.log(error.response);
         });
@@ -82,8 +92,59 @@ class MainListApplication extends Component {
         }));
     };
 
-    outputAccept = (key) => {
-        this.state.posts.splice(key , 1);
+    outputAccept = (key, idApp) => {
+        let params = new URLSearchParams();
+
+        console.log(this.state.posts.length);
+        let login = this.state.user.userLogin;
+        let token = this.state.user.tokenString;
+        params.append('userLogin', login);
+        params.append('token', token);
+        params.append('idApp', +idApp);
+
+        axios.post('http://localhost:8080/applications/sign', params)
+            .then( (response) => {
+                console.log('Подписали заявку: ', response);
+                this.state.posts.splice(key , 1);
+                this.setState(prevState => ({
+                    posts : prevState.posts
+                }));
+                console.log(this.state.posts.length);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    };
+
+    showAllApp = () => {
+        this.componentDidMount();
+    };
+
+    showHistoryApp = () => {
+        let params = new URLSearchParams();
+
+        let login = this.state.user.userLogin;
+        let token = this.state.user.tokenString;
+
+        console.log(login, token);
+
+        params.append('userLogin', login);
+        params.append('token', token);
+
+        axios.get('http://localhost:8080/applications/history', {
+            params: params
+        }).then((response) => {
+            console.log(response);
+            this.setState({
+                posts : response.data,
+                btn : {
+                    all : false,
+                    history : true
+                }
+            });
+        }).catch( (error) => {
+            console.log(error.response);
+        });
     };
 
 
@@ -94,13 +155,22 @@ class MainListApplication extends Component {
                               active={this.state.isActiveWindow} owner={this.state.ownerActiveEvent}/>
                 <Row>
                     <Col xsOffset={1} xs={10}>
-                        <PageHeader>Все активные заявки</PageHeader>
+                        <PageHeader>
+                            <Row>
+                                <Button active={this.state.btn.all} onClick={this.showAllApp}>
+                                    Все активные заявки
+                                </Button>
+                                <Button active={this.state.btn.history} onClick={this.showHistoryApp}>
+                                    История моих подписей
+                                </Button>
+                            </Row>
+                        </PageHeader>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col xsOffset={1} xs={10}>
-                        <Applications activeFunc={this.clickActiveWindow.bind(this)} posts={this.state.posts}/>
+                        <Applications history={this.state.btn.history} activeFunc={this.clickActiveWindow.bind(this)} posts={this.state.posts}/>
                     </Col>
                 </Row>
 

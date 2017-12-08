@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {PageHeader,
-    Grid, Row, Col, FormGroup, FormControl, Button, ControlLabel, HelpBlock} from 'react-bootstrap'
+    Grid, Row, Col, FormGroup, FormControl, Button, ControlLabel} from 'react-bootstrap'
 
 
 
@@ -11,7 +11,11 @@ class MainRegistration extends Component {
 
     constructor(props) {
         super(props);
-    };
+        this.state = {
+            errorMessage : null
+        }
+    }
+
 
     registration = () => {
         let params = new URLSearchParams();
@@ -24,6 +28,33 @@ class MainRegistration extends Component {
         let about = document.getElementById("about_id").value;
         let inviteToken = document.getElementById("invite_token_id").value;
 
+        const isNotEmpty = (...args) => {
+            for (let i = 0; i < args.length; i++) {
+                if (args[i] === '') {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        if(!isNotEmpty(login, password, name, passwordRepeat, surname, email, inviteToken, about)) {
+            this.setState( {
+                errorMessage : 'Все поля должны быть заполенны!'
+            });
+            console.log('Все поля должны быть заполенны!');
+            console.log(this.state.errorMessage);
+            return;
+        }
+
+        if (password !== passwordRepeat) {
+            this.setState({
+                errorMessage : 'Пароли не совпадают!'
+            });
+            console.log('Пароли не совпадают!');
+            console.log(this.state.errorMessage);
+            return;
+        }
+
         params.append('login', login);
         params.append('password', password);
         params.append('name', name);
@@ -31,6 +62,10 @@ class MainRegistration extends Component {
         params.append('email', email);
         params.append('about', about);
         params.append('token_invite', inviteToken);
+
+        this.setState({
+            errorMessage : ''
+        });
 
         axios.post('http://localhost:8080/sign-up', params)
             .then((response) => {
@@ -81,6 +116,10 @@ class MainRegistration extends Component {
 
                             <FormGroup id="aboutGroup" >
                                 <FormControl id="about_id" componentClass="textarea" placeholder="Обо мне"/>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <ControlLabel>{this.state.errorMessage}</ControlLabel>
                             </FormGroup>
 
                             <Button onClick={this.registration}

@@ -2,7 +2,7 @@ import React from 'react';
 import {LinkContainer} from 'react-router-bootstrap'
 import { Link } from 'react-router-dom'
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap'
-import {deleteCookie} from '../../service/CookieService'
+import {deleteCookie} from '../service/CookieService'
 
 
 class Header extends React.Component {

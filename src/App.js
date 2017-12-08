@@ -1,11 +1,12 @@
 import React from 'react';
 import {Switch, Route, Redirect } from 'react-router'
-import MainListApplication from './components/main/main_list_application/MainListApplication'
-import MainLogin from './components/main/main_login/MainLogin'
-import Header from './components/header/Header'
-import MainNewApplication from './components/main/main_new_application/MainNewApplication'
-import MainRegistration from './components/main/main_registration/MainRegistration'
-import Error404 from './components/main/error404/error404'
+import MainListApplication from './components/MainListApplication'
+import MainLogin from './components/MainLogin'
+import Header from './components/Header'
+import MainNewApplication from './components/MainNewApplication'
+import MainRegistration from './components/MainRegistration'
+import UserImPage from './components/UsersImPage'
+import Error404 from './components/error404'
 
 
 import './App.css'
@@ -65,6 +66,10 @@ class App extends React.Component {
                             <MainNewApplication user={this.getUserData.bind(this)} funcUser={this.setUserData.bind(this)}/>
                         </Route>
 
+                        <Route exact path='/users/im'>
+                            <UserImPage user={this.getUserData.bind(this)} funcUser={this.setUserData.bind(this)}/>
+                        </Route>
+
                         <Route exact path='/sign-in'>
                             <Redirect to="/applications"/>
                         </Route>
@@ -89,6 +94,8 @@ class App extends React.Component {
                         <Route exact path='/sign-up'>
                             <MainRegistration funcUser={this.setUserData.bind(this)}/>
                         </Route>
+
+
 
                         <Route path="/**">
                             <Redirect to="/sign-in"/>

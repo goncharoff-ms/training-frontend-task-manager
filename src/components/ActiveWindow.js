@@ -24,7 +24,7 @@ export default (props) => {
 
                  <Modal.Footer>
                      <Button onClick={props.activeFunc}>Отменить</Button>
-                     <Button onClick={() => {props.accept(props.owner.id); props.activeFunc()}} bsStyle="primary">Подписать</Button>
+                     <Button onClick={() => {props.accept(props.owner.id, props.owner.post.id); props.activeFunc()}} bsStyle="primary">Подписать</Button>
                  </Modal.Footer>
 
              </Modal.Dialog>

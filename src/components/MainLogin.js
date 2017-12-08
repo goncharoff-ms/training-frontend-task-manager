@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
-import {Redirect} from 'react-router';
 import {LinkContainer} from 'react-router-bootstrap'
 import axios from 'axios'
-import {getCookie, setCookie} from '../../../service/CookieService'
+import {getCookie, setCookie} from '../service/CookieService'
 import {PageHeader, Grid, Row, Col, FormGroup, FormControl, Button} from 'react-bootstrap'
 
 class MainLogin extends Component {
 
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
         let login = getCookie('login');
