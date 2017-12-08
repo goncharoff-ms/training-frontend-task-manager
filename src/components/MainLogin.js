@@ -55,7 +55,7 @@ class MainLogin extends Component {
                             <FormControl id="password_id" type="password" placeholder="Password"/>
                             <Button onClick={this.auth} bsStyle="primary" bsSize="large" block>Войти</Button>
                             <LinkContainer to="/sign-up">
-                                <a>Нет аккаунта? Зарегестрируйтесь.</a>
+                                <a>Нет аккаунта? Зарегистрируйтесь.</a>
                             </LinkContainer>
                         </FormGroup>
                     </Col>
