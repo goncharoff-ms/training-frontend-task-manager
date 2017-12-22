@@ -26,7 +26,7 @@ class App extends React.Component {
     }
 
     setUserData = (loginNew, tokenStringNew) => {
-        console.log('[App.js] log and token: ' ,loginNew, tokenStringNew);
+        console.log('[App.js] log and token: ' , loginNew, tokenStringNew);
         if (String(loginNew).length > 0 && String(tokenStringNew).length) {
             this.setState({
                 isLogin: true,

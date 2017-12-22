@@ -41,7 +41,6 @@ class MainLogin extends Component {
             });
     };
 
-
     render() {
         return(
             <Grid>
@@ -55,7 +54,7 @@ class MainLogin extends Component {
                             <FormControl id="password_id" type="password" placeholder="Password"/>
                             <Button onClick={this.auth} bsStyle="primary" bsSize="large" block>Войти</Button>
                             <LinkContainer to="/sign-up">
-                                <a>Нет аккаунта? Зарегистрируйтесь.</a>
+                                <a>Нет аккаунта? Зарегестрируйтесь.</a>
                             </LinkContainer>
                         </FormGroup>
                     </Col>

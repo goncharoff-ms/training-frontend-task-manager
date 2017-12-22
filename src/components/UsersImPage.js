@@ -50,7 +50,6 @@ export default class UsersImPage extends Component {
         }).catch((error) => {
             console.log(error.response);
         });
-
     };
 
 
@@ -65,7 +64,6 @@ export default class UsersImPage extends Component {
                         <p>{this.state.surname}</p>
                         <p>{this.state.email}</p>
                         <p>{this.state.aboutUser}</p>
-
                     </Col>
                </Row>
             </Grid>

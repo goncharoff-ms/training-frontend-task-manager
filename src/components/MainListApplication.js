@@ -1,43 +1,14 @@
 import React, { Component } from 'react';
 
-import {} from 'react-bootstrap'
 import axios from 'axios';
 import {Grid} from "react-bootstrap";
 import {Row} from "react-bootstrap";
 import {PageHeader} from "react-bootstrap";
 import {Col} from "react-bootstrap";
-import {Button} from "react-bootstrap";
+import {Button, FormControl} from "react-bootstrap";
 import Applications from './Application'
 import ActiveWindow from "./ActiveWindow";
-
-/*
- [
- {
- name : "Имя заявки",
- dif : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex magni delectus, maxime quidem consequatur magnam dolor quia. Sapiente expedita neque velit doloremque numquam consectetur tenetur nihil mollitia, hic, totam nemo.",
- date :  "до 10.12.2017, 14:50",
- order : "ВЫСОКИЙ"
- },
- {
- name : "Имя заявки",
- dif : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex magni delectus, maxime quidem consequatur magnam dolor quia. Sapiente expedita neque velit doloremque numquam consectetur tenetur nihil mollitia, hic, totam nemo.",
- date :  "до 10.12.2017, 14:50",
- order : "ВЫСОКИЙ"
- },
- {
- name : "Имя заявки",
- dif : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex magni delectus, maxime quidem consequatur magnam dolor quia. Sapiente expedita neque velit doloremque numquam consectetur tenetur nihil mollitia, hic, totam nemo.",
- date :  "до 10.12.2017, 14:50",
- order : "ВЫСОКИЙ"
- },
- {
- name : "Имя заявки",
- dif : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex magni delectus, maxime quidem consequatur magnam dolor quia. Sapiente expedita neque velit doloremque numquam consectetur tenetur nihil mollitia, hic, totam nemo.",
- date :  "до 10.12.2017, 14:50",
- order : "ВЫСОКИЙ"
- }
- ]
- */
+import FormGroup from "react-bootstrap/es/FormGroup";
 
 class MainListApplication extends Component {
 
@@ -55,8 +26,8 @@ class MainListApplication extends Component {
         }
     }
 
-    componentDidMount() {
 
+    componentDidMount() {
         let params = new URLSearchParams();
 
         console.log('this.state.user.userLogin',this.state.user.userLogin);
@@ -67,6 +38,9 @@ class MainListApplication extends Component {
 
         params.append('userLogin', login);
         params.append('token', token);
+
+
+        //params.append('sortedByOrder', 'true');
 
         axios.get('http://localhost:8080/applications', {
             params: params
@@ -116,6 +90,42 @@ class MainListApplication extends Component {
             });
     };
 
+  clickSearch = (e) => {
+
+    if(!(e.key === 'Enter')) {
+        return;
+    }
+
+
+    let params = new URLSearchParams();
+
+    let login = this.state.user.userLogin;
+    let token = this.state.user.tokenString;
+
+    params.append('userLogin', login);
+    params.append('token', token);
+    params.append('searchWord', this.searchWord.value);
+
+    console.log(this.searchWord.value);
+
+    axios.get('http://localhost:8080/applications', {
+      params: params
+    }).then((response) => {
+      console.log(response);
+      this.setState({
+        posts : response.data,
+        btn : {
+          all : false,
+          history: false
+        }
+      });
+    }).catch( (error) => {
+      console.log(error.response);
+    });
+
+
+  };
+
     showAllApp = () => {
         this.componentDidMount();
     };
@@ -147,6 +157,41 @@ class MainListApplication extends Component {
         });
     };
 
+    loadByOrder = (event) => {
+      let solve = +event.target.value;
+      console.log("solve = ", solve);
+      let params = new URLSearchParams();
+
+      let login = this.state.user.userLogin;
+      let token = this.state.user.tokenString;
+
+      params.append('userLogin', login);
+      params.append('token', token);
+
+        if(solve === 2) {
+          params.append('sortedByOrder', 'UPDOWN');
+        } else if(solve === 1) {
+          params.append('sortedByOrder', 'DOWNUP');
+        } else {
+            return;
+        }
+
+      axios.get('http://localhost:8080/applications', {
+        params: params
+      }).then((response) => {
+        console.log(response);
+        this.setState({
+          posts : response.data,
+          btn : {
+            all : false,
+            history: false
+          }
+        });
+      }).catch( (error) => {
+        console.log(error.response);
+      });
+    };
+
 
     render() {
         return (
@@ -157,12 +202,30 @@ class MainListApplication extends Component {
                     <Col xsOffset={1} xs={10}>
                         <PageHeader>
                             <Row>
-                                <Button active={this.state.btn.all} onClick={this.showAllApp}>
-                                    Все активные заявки
-                                </Button>
-                                <Button active={this.state.btn.history} onClick={this.showHistoryApp}>
-                                    История моих подписей
-                                </Button>
+                                <Col xs={6}>
+                                    <Button active={this.state.btn.all} onClick={this.showAllApp}>
+                                        Все активные заявки
+                                    </Button>
+                                    <Button active={this.state.btn.history} onClick={this.showHistoryApp}>
+                                        История моих подписей
+                                    </Button>
+                                </Col>
+
+                                <Col xsOffset={2} xs={4}>
+                                    <FormGroup>
+                                        <FormControl onChange={this.loadByOrder} componentClass="select" placeholder="фильтр по приоритету">
+                                            <option value="-1">...</option>
+                                            <option value="2">Высокий -> Низкий</option>
+                                            <option value="1">Низкий -> Высокий</option>
+                                        </FormControl>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <FormControl inputRef={(input) => { this.searchWord = input; }}
+                                                     onKeyPress={this.clickSearch}
+                                                     type="text"
+                                                     placeholder="Поиск по названию"/>
+                                    </FormGroup>
+                                </Col>
                             </Row>
                         </PageHeader>
                     </Col>

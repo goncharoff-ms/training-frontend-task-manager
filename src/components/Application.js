@@ -16,7 +16,9 @@ export default class MainListApplication extends Component {
     };
 
 
-        render() {
+    render() {
+
+        const styleApp = 'height : 100px;';
 
             const AppItem = (props) => {
                if (this.props.history) {
